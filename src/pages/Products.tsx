@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { Loader2, SlidersHorizontal } from "lucide-react";
 import * as db from "@/lib/database";
 
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=80";
+
 const Products = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -135,16 +137,20 @@ const Products = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {products.map((product, index) => (
                 <div
-                  key={product.id}
+                  key={`${product.id}-${product.updated_at || product.created_at}`}
                   className="bg-card border border-border rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group animate-fade-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <Link to={`/product/${product.id}`}>
                     <div className="relative h-64 overflow-hidden">
                       <img
-                        src={product.image}
+                        key={product.image}
+                        src={product.image || FALLBACK_IMAGE}
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                          e.currentTarget.src = FALLBACK_IMAGE;
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-hero opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
                     </div>

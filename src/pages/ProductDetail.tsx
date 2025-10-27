@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { ShoppingCart, Heart, Share2, Check, Palette, Type, Image as ImageIcon, Loader2 } from "lucide-react";
 import * as db from "@/lib/database";
 
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=80";
+
 const ProductDetail = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
@@ -132,9 +134,13 @@ const ProductDetail = () => {
             <div className="space-y-4">
               <div className="aspect-square rounded-lg overflow-hidden border-2 border-border shadow-xl">
                 <img
-                  src={product.image}
+                  key={`${product.id}-${product.image}-${product.updated_at || product.created_at}`}
+                  src={product.image || FALLBACK_IMAGE}
                   alt={product.name}
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    e.currentTarget.src = FALLBACK_IMAGE;
+                  }}
                 />
               </div>
               {customization.uploadedImage && (
@@ -358,9 +364,13 @@ const ProductDetail = () => {
                     <Card className="group overflow-hidden hover:shadow-xl transition-shadow">
                       <div className="aspect-square overflow-hidden">
                         <img
-                          src={relatedProduct.image}
+                          key={`${relatedProduct.id}-${relatedProduct.image}`}
+                          src={relatedProduct.image || FALLBACK_IMAGE}
                           alt={relatedProduct.name}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => {
+                            e.currentTarget.src = FALLBACK_IMAGE;
+                          }}
                         />
                       </div>
                       <CardContent className="p-4">
