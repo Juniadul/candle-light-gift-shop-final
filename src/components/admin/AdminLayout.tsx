@@ -9,7 +9,8 @@ import {
   Menu,
   X,
   Home,
-  FolderTree
+  FolderTree,
+  MessageSquareQuote
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -34,6 +35,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: "/admin/products", icon: Package, label: "Products" },
     { path: "/admin/categories", icon: FolderTree, label: "Categories" },
     { path: "/admin/orders", icon: ShoppingCart, label: "Orders" },
+    { path: "/admin/testimonials", icon: MessageSquareQuote, label: "Testimonials" },
     { path: "/admin/settings", icon: Settings, label: "Settings" },
   ];
 

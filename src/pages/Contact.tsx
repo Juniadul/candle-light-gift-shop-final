@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Phone, Mail, MapPin, Loader2 } from "lucide-react";
 import { z } from "zod";
+import emailjs from '@emailjs/browser';
 import * as db from "@/lib/database";
 
 const appointmentSchema = z.object({
@@ -52,22 +53,31 @@ const Contact = () => {
       
       setSubmitting(true);
       
-      // Send email notification
+      // Send email notification using EmailJS
       try {
-        await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            message: `Appointment Request:\nDate: ${formData.preferredDate}\nTime: ${formData.preferredTime}\nOccasion: ${formData.occasionType}\n\n${formData.message || 'No additional message'}`
-          })
-        });
+        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+        if (serviceId && templateId && publicKey) {
+          await emailjs.send(
+            serviceId,
+            templateId,
+            {
+              from_name: formData.name,
+              from_email: formData.email,
+              phone: formData.phone,
+              message: `Appointment Request:\nDate: ${formData.preferredDate}\nTime: ${formData.preferredTime}\nOccasion: ${formData.occasionType}\n\n${formData.message || 'No additional message'}`,
+              to_email: 'candlelightgiftshop1@gmail.com',
+            },
+            publicKey
+          );
+        }
       } catch (emailError) {
         console.error('Failed to send email notification:', emailError);
       }
       
+      // Save to database
       const result = await db.createAppointment({
         name: formData.name,
         email: formData.email,
@@ -234,6 +244,8 @@ const Contact = () => {
                     <option value="Engagement">Engagement</option>
                     <option value="Birthday">Birthday</option>
                     <option value="Anniversary">Anniversary</option>
+                    <option value="Durga Puja">Durga Puja</option>
+                    <option value="Eid">Eid Salami Card</option>
                     <option value="Corporate Event">Corporate Event</option>
                     <option value="Other">Other</option>
                   </select>

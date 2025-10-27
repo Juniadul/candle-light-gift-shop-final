@@ -236,6 +236,81 @@ export const getTestimonials = async () => {
   }
 };
 
+export const getAllTestimonials = async () => {
+  try {
+    const results = await db.select().from(testimonials)
+      .orderBy(desc(testimonials.created_at));
+    return { success: true, data: results };
+  } catch (error) {
+    console.error('Failed to load testimonials:', error);
+    return { success: false, error: 'Failed to load testimonials' };
+  }
+};
+
+export const createTestimonial = async (testimonial: {
+  name: string;
+  role: string;
+  content: string;
+  rating: number;
+  image: string;
+  isFeatured: boolean;
+}) => {
+  try {
+    const timestamp = new Date().toISOString();
+    const newTestimonial = await db.insert(testimonials).values({
+      name: testimonial.name,
+      role: testimonial.role,
+      content: testimonial.content,
+      rating: testimonial.rating,
+      image: testimonial.image,
+      is_featured: testimonial.isFeatured,
+      created_at: timestamp,
+    }).returning();
+    return { success: true, data: newTestimonial[0] };
+  } catch (error) {
+    console.error('Failed to create testimonial:', error);
+    return { success: false, error: 'Failed to create testimonial' };
+  }
+};
+
+export const updateTestimonial = async (id: number, testimonial: Partial<{
+  name: string;
+  role: string;
+  content: string;
+  rating: number;
+  image: string;
+  isFeatured: boolean;
+}>) => {
+  try {
+    const updateData: any = {};
+    if (testimonial.name !== undefined) updateData.name = testimonial.name;
+    if (testimonial.role !== undefined) updateData.role = testimonial.role;
+    if (testimonial.content !== undefined) updateData.content = testimonial.content;
+    if (testimonial.rating !== undefined) updateData.rating = testimonial.rating;
+    if (testimonial.image !== undefined) updateData.image = testimonial.image;
+    if (testimonial.isFeatured !== undefined) updateData.is_featured = testimonial.isFeatured;
+
+    const updated = await db.update(testimonials)
+      .set(updateData)
+      .where(eq(testimonials.id, id))
+      .returning();
+    return { success: true, data: updated[0] };
+  } catch (error) {
+    console.error('Failed to update testimonial:', error);
+    return { success: false, error: 'Failed to update testimonial' };
+  }
+};
+
+export const deleteTestimonial = async (id: number) => {
+  try {
+    await db.delete(testimonials).where(eq(testimonials.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete testimonial:', error);
+    return { success: false, error: 'Failed to delete testimonial' };
+  }
+};
+
 // Stories API
 export const getStories = async () => {
   try {
