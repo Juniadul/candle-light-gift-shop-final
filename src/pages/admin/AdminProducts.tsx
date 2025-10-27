@@ -261,6 +261,7 @@ const AdminProducts = () => {
                   />
                   {formData.image && (
                     <img
+                      key={formData.image}
                       src={formData.image}
                       alt="Preview"
                       className="mt-2 w-full h-48 object-cover rounded-lg"
