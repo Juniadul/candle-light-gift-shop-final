@@ -34,7 +34,8 @@ const AdminProducts = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [imageKey, setImageKey] = useState(0);
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageError, setImageError] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -115,7 +116,8 @@ const AdminProducts = () => {
       image: "",
     });
     setEditingProduct(null);
-    setImageKey(0);
+    setImageUrl("");
+    setImageError(false);
   };
 
   const handleEdit = (product: any) => {
@@ -127,7 +129,8 @@ const AdminProducts = () => {
       category: product.category,
       image: product.image,
     });
-    setImageKey(Date.now());
+    setImageUrl(product.image);
+    setImageError(false);
     setIsDialogOpen(true);
   };
 
@@ -145,7 +148,8 @@ const AdminProducts = () => {
 
   const handleImageUrlChange = (value: string) => {
     setFormData({ ...formData, image: value });
-    setImageKey(Date.now()); // Force image refresh
+    setImageUrl(value);
+    setImageError(false);
   };
 
   return (
@@ -265,20 +269,28 @@ const AdminProducts = () => {
                     onChange={(e) => handleImageUrlChange(e.target.value)}
                     placeholder="https://example.com/image.jpg (optional)"
                   />
-                  {formData.image && (
-                    <div className="mt-2 relative">
-                      <img
-                        key={`preview-${imageKey}`}
-                        src={`${formData.image}${formData.image.includes('?') ? '&' : '?'}t=${imageKey}`}
-                        alt="Preview"
-                        className="w-full h-48 object-cover rounded-lg border-2 border-primary/20"
-                        onError={(e) => {
-                          e.currentTarget.src = FALLBACK_IMAGE;
-                        }}
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Preview updates as you type
-                      </p>
+                  {imageUrl && (
+                    <div className="mt-3 space-y-2">
+                      <div className="relative rounded-lg overflow-hidden border-2 border-primary/20">
+                        <img
+                          key={imageUrl}
+                          src={imageUrl}
+                          alt="Preview"
+                          className="w-full h-48 object-cover"
+                          onError={() => setImageError(true)}
+                          onLoad={() => setImageError(false)}
+                        />
+                      </div>
+                      <div className="text-xs space-y-1">
+                        <p className="text-muted-foreground">
+                          <span className="font-semibold">Attempting to load:</span> {imageUrl.substring(0, 60)}...
+                        </p>
+                        {imageError && (
+                          <p className="text-destructive font-semibold">
+                            ⚠️ Failed to load image. Make sure the URL is a direct link to an image file (jpg, png, etc.)
+                          </p>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
