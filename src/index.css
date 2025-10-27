@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Luxurious color palette for Candle Light Gift Shop */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 15%;
+
+    /* Purple Primary - #6A1B9A */
+    --primary: 282 62% 35%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 282 55% 50%;
+    
+    /* Royal Blue Secondary - #283593 */
+    --secondary: 231 55% 36%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 231 50% 50%;
+
+    /* Crimson Red Accent - #C62828 */
+    --accent: 0 69% 47%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 0 65% 60%;
+
+    /* Gold accent */
+    --gold: 43 96% 56%;
+    --gold-light: 43 90% 70%;
+    
+    /* Beige accent */
+    --beige: 40 30% 92%;
+    --beige-dark: 40 25% 85%;
+
+    --muted: 240 10% 96%;
+    --muted-foreground: 240 5% 45%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 10% 90%;
+    --input: 240 10% 95%;
+    --ring: 282 62% 35%;
+
+    --radius: 0.75rem;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(282 62% 35%), hsl(231 55% 36%));
+    --gradient-accent: linear-gradient(135deg, hsl(231 55% 36%), hsl(0 69% 47%));
+    --gradient-gold: linear-gradient(135deg, hsl(43 96% 56%), hsl(43 96% 70%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%), hsl(40 30% 98%));
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 30% 10%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 25% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 25% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 282 62% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 282 55% 60%;
+
+    --secondary: 231 55% 46%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 231 50% 60%;
+
+    --accent: 0 69% 57%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 0 65% 70%;
+
+    --gold: 43 96% 66%;
+    --gold-light: 43 90% 80%;
+    
+    --beige: 40 20% 20%;
+    --beige-dark: 40 15% 15%;
+
+    --muted: 240 20% 18%;
+    --muted-foreground: 240 10% 70%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 20% 20%;
+    --input: 240 20% 18%;
+    --ring: 282 62% 45%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(282 62% 30%), hsl(231 55% 31%));
+    --gradient-accent: linear-gradient(135deg, hsl(231 55% 31%), hsl(0 69% 42%));
+    --gradient-gold: linear-gradient(135deg, hsl(43 96% 46%), hsl(43 96% 60%));
+    --gradient-soft: linear-gradient(180deg, hsl(240 30% 10%), hsl(240 25% 12%));
+    
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+/* Custom elegant animations */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+  
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(106, 27, 154, 0.15);
+  }
+  
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(282 62% 35%), hsl(231 55% 36%));
+  }
+  
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(231 55% 36%), hsl(0 69% 47%));
+  }
+  
+  .gradient-gold {
+    background: linear-gradient(135deg, hsl(43 96% 56%), hsl(43 96% 70%));
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
