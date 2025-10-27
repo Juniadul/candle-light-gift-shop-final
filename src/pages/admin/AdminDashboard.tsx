@@ -138,7 +138,7 @@ const AdminDashboard = () => {
                 {recentOrders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0">
                     <div>
-                      <p className="font-semibold">Order #{order.id.slice(0, 8)}</p>
+                      <p className="font-semibold">Order #{String(order.id).slice(0, 8)}</p>
                       <p className="text-sm text-muted-foreground">{order.customer_name || order.customer_email}</p>
                     </div>
                     <div className="text-right">
