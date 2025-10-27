@@ -20,7 +20,6 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Package, Eye, Loader2 } from "lucide-react";
-import { Order } from "@/lib/supabase";
 import * as db from "@/lib/database";
 
 const statusColors = {
@@ -31,11 +30,25 @@ const statusColors = {
   cancelled: "bg-red-500",
 };
 
+interface OrderType {
+  id: number;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  shipping_address: string;
+  notes?: string;
+  total_amount: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  items: any[];
+  created_at?: string;
+  updated_at?: string;
+}
+
 const AdminOrders = () => {
   const navigate = useNavigate();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderType | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -57,7 +70,7 @@ const AdminOrders = () => {
     setLoading(false);
   };
 
-  const handleStatusChange = async (orderId: string, newStatus: Order["status"]) => {
+  const handleStatusChange = async (orderId: number, newStatus: OrderType["status"]) => {
     const result = await db.updateOrderStatus(orderId, newStatus);
     if (result.success) {
       toast.success("Order status updated successfully!");
@@ -67,7 +80,7 @@ const AdminOrders = () => {
     }
   };
 
-  const viewOrderDetails = (order: Order) => {
+  const viewOrderDetails = (order: OrderType) => {
     setSelectedOrder(order);
     setDialogOpen(true);
   };
@@ -101,7 +114,7 @@ const AdminOrders = () => {
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">Order ID</p>
                       <p className="font-mono text-sm">
-                        #{order.id.slice(0, 8).toUpperCase()}
+                        #{order.id.toString().padStart(8, '0')}
                       </p>
                     </div>
 
@@ -114,7 +127,7 @@ const AdminOrders = () => {
                     <div>
                       <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
                       <p className="font-bold text-lg text-primary">
-                        ৳{order.total_amount}
+                        ৳{(order.total_amount || 0).toLocaleString()}
                       </p>
                     </div>
 
@@ -123,7 +136,7 @@ const AdminOrders = () => {
                       <Select
                         value={order.status}
                         onValueChange={(value) =>
-                          handleStatusChange(order.id, value as Order["status"])
+                          handleStatusChange(order.id, value as OrderType["status"])
                         }
                       >
                         <SelectTrigger className="w-full">
@@ -173,7 +186,7 @@ const AdminOrders = () => {
             <DialogHeader>
               <DialogTitle>Order Details</DialogTitle>
               <DialogDescription>
-                Order #{selectedOrder?.id.slice(0, 8).toUpperCase()}
+                Order #{selectedOrder ? selectedOrder.id.toString().padStart(8, '0') : ''}
               </DialogDescription>
             </DialogHeader>
 
@@ -227,7 +240,7 @@ const AdminOrders = () => {
                             Quantity: {item.quantity}
                           </p>
                         </div>
-                        <p className="font-semibold">৳{item.price * item.quantity}</p>
+                        <p className="font-semibold">৳{(item.price * item.quantity).toLocaleString()}</p>
                       </div>
                     ))}
                   </div>
@@ -248,7 +261,7 @@ const AdminOrders = () => {
                   <div className="flex justify-between items-center">
                     <p className="text-lg font-semibold">Total Amount</p>
                     <p className="text-2xl font-bold text-primary">
-                      ৳{selectedOrder.total_amount}
+                      ৳{(selectedOrder.total_amount || 0).toLocaleString()}
                     </p>
                   </div>
                 </div>
