@@ -24,7 +24,7 @@ export const getProducts = async (filters?: { category?: string; search?: string
       query = query.where(and(...conditions));
     }
 
-    const results = await query.orderBy(desc(products.createdAt));
+    const results = await query.orderBy(desc(products.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load products:', error);
@@ -53,8 +53,8 @@ export const createProduct = async (product: {
     const timestamp = new Date().toISOString();
     const newProduct = await db.insert(products).values({
       ...product,
-      createdAt: timestamp,
-      updatedAt: timestamp,
+      created_at: timestamp,
+      updated_at: timestamp,
     }).returning();
     return { success: true, data: newProduct[0] };
   } catch (error) {
@@ -72,7 +72,7 @@ export const updateProduct = async (id: number, product: Partial<{
 }>) => {
   try {
     const updated = await db.update(products)
-      .set({ ...product, updatedAt: new Date().toISOString() })
+      .set({ ...product, updated_at: new Date().toISOString() })
       .where(eq(products.id, id))
       .returning();
     return { success: true, data: updated[0] };
@@ -95,7 +95,7 @@ export const deleteProduct = async (id: number) => {
 // Orders API
 export const getOrders = async () => {
   try {
-    const results = await db.select().from(orders).orderBy(desc(orders.createdAt));
+    const results = await db.select().from(orders).orderBy(desc(orders.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load orders:', error);
@@ -118,8 +118,8 @@ export const getOrderById = async (id: number) => {
 export const getOrdersByEmail = async (email: string) => {
   try {
     const results = await db.select().from(orders)
-      .where(eq(orders.customerEmail, email))
-      .orderBy(desc(orders.createdAt));
+      .where(eq(orders.customer_email, email))
+      .orderBy(desc(orders.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load orders:', error);
@@ -139,10 +139,16 @@ export const createOrder = async (order: {
   try {
     const timestamp = new Date().toISOString();
     const newOrder = await db.insert(orders).values({
-      ...order,
+      customer_name: order.customerName,
+      customer_email: order.customerEmail,
+      customer_phone: order.customerPhone,
+      shipping_address: order.shippingAddress,
+      notes: order.notes,
+      total_amount: order.totalAmount,
+      items: order.items,
       status: 'pending',
-      createdAt: timestamp,
-      updatedAt: timestamp,
+      created_at: timestamp,
+      updated_at: timestamp,
     }).returning();
     return { success: true, data: newOrder[0] };
   } catch (error) {
@@ -151,11 +157,12 @@ export const createOrder = async (order: {
   }
 };
 
-export const updateOrderStatus = async (id: number, status: string) => {
+export const updateOrderStatus = async (id: number | string, status: string) => {
   try {
+    const orderId = typeof id === 'string' ? parseInt(id) : id;
     const updated = await db.update(orders)
-      .set({ status, updatedAt: new Date().toISOString() })
-      .where(eq(orders.id, id))
+      .set({ status, updated_at: new Date().toISOString() })
+      .where(eq(orders.id, orderId))
       .returning();
     return { success: true, data: updated[0] };
   } catch (error) {
@@ -167,7 +174,7 @@ export const updateOrderStatus = async (id: number, status: string) => {
 // Appointments API
 export const getAppointments = async () => {
   try {
-    const results = await db.select().from(appointments).orderBy(desc(appointments.createdAt));
+    const results = await db.select().from(appointments).orderBy(desc(appointments.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load appointments:', error);
@@ -186,9 +193,15 @@ export const createAppointment = async (appointment: {
 }) => {
   try {
     const newAppointment = await db.insert(appointments).values({
-      ...appointment,
+      name: appointment.name,
+      email: appointment.email,
+      phone: appointment.phone,
+      preferred_date: appointment.preferredDate,
+      preferred_time: appointment.preferredTime,
+      occasion_type: appointment.occasionType,
+      message: appointment.message,
       status: 'pending',
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     }).returning();
     return { success: true, data: newAppointment[0] };
   } catch (error) {
@@ -214,8 +227,8 @@ export const updateAppointmentStatus = async (id: number, status: string) => {
 export const getTestimonials = async () => {
   try {
     const results = await db.select().from(testimonials)
-      .where(eq(testimonials.isFeatured, true))
-      .orderBy(desc(testimonials.createdAt));
+      .where(eq(testimonials.is_featured, true))
+      .orderBy(desc(testimonials.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load testimonials:', error);
@@ -226,7 +239,7 @@ export const getTestimonials = async () => {
 // Stories API
 export const getStories = async () => {
   try {
-    const results = await db.select().from(stories).orderBy(desc(stories.createdAt));
+    const results = await db.select().from(stories).orderBy(desc(stories.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load stories:', error);
@@ -248,8 +261,8 @@ export const getStoryById = async (id: number) => {
 export const getCommentsByStoryId = async (storyId: number) => {
   try {
     const results = await db.select().from(comments)
-      .where(and(eq(comments.storyId, storyId), eq(comments.status, 'approved')))
-      .orderBy(desc(comments.createdAt));
+      .where(and(eq(comments.story_id, storyId), eq(comments.status, 'approved')))
+      .orderBy(desc(comments.created_at));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load comments:', error);
@@ -265,9 +278,12 @@ export const createComment = async (comment: {
 }) => {
   try {
     const newComment = await db.insert(comments).values({
-      ...comment,
+      story_id: comment.storyId,
+      name: comment.name,
+      email: comment.email,
+      message: comment.message,
       status: 'pending',
-      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
     }).returning();
     return { success: true, data: newComment[0] };
   } catch (error) {
@@ -279,7 +295,7 @@ export const createComment = async (comment: {
 // Categories API
 export const getCategories = async () => {
   try {
-    const results = await db.select().from(categories).orderBy(categories.displayOrder);
+    const results = await db.select().from(categories).orderBy(categories.display_order);
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load categories:', error);
@@ -290,7 +306,7 @@ export const getCategories = async () => {
 // Tracking Codes API
 export const getTrackingCodes = async () => {
   try {
-    const results = await db.select().from(trackingCodes).where(eq(trackingCodes.isActive, true));
+    const results = await db.select().from(trackingCodes).where(eq(trackingCodes.is_active, true));
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load tracking codes:', error);
@@ -301,7 +317,7 @@ export const getTrackingCodes = async () => {
 export const getTrackingCodeByType = async (type: string) => {
   try {
     const result = await db.select().from(trackingCodes)
-      .where(and(eq(trackingCodes.type, type), eq(trackingCodes.isActive, true)))
+      .where(and(eq(trackingCodes.type, type), eq(trackingCodes.is_active, true)))
       .limit(1);
     return { success: true, data: result[0] };
   } catch (error) {
@@ -319,7 +335,7 @@ export const saveTrackingCode = async (type: string, code: string) => {
     
     if (existing.length > 0) {
       const updated = await db.update(trackingCodes)
-        .set({ code, isActive: true, updatedAt: timestamp })
+        .set({ code, is_active: true, updated_at: timestamp })
         .where(eq(trackingCodes.type, type))
         .returning();
       return { success: true, data: updated[0] };
@@ -327,9 +343,9 @@ export const saveTrackingCode = async (type: string, code: string) => {
       const newCode = await db.insert(trackingCodes).values({
         type,
         code,
-        isActive: true,
-        createdAt: timestamp,
-        updatedAt: timestamp,
+        is_active: true,
+        created_at: timestamp,
+        updated_at: timestamp,
       }).returning();
       return { success: true, data: newCode[0] };
     }

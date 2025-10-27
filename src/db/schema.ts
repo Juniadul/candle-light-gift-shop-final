@@ -8,23 +8,23 @@ export const products = sqliteTable('products', {
   price: real('price').notNull(),
   category: text('category').notNull(),
   image: text('image').notNull(),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull(),
+  created_at: text('created_at').notNull(),
+  updated_at: text('updated_at').notNull(),
 });
 
 // Orders table
 export const orders = sqliteTable('orders', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  customerName: text('customer_name').notNull(),
-  customerEmail: text('customer_email').notNull(),
-  customerPhone: text('customer_phone').notNull(),
-  shippingAddress: text('shipping_address').notNull(),
+  customer_name: text('customer_name').notNull(),
+  customer_email: text('customer_email').notNull(),
+  customer_phone: text('customer_phone').notNull(),
+  shipping_address: text('shipping_address').notNull(),
   notes: text('notes'),
-  totalAmount: real('total_amount').notNull(),
+  total_amount: real('total_amount').notNull(),
   status: text('status').notNull().default('pending'),
   items: text('items', { mode: 'json' }).notNull(),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull(),
+  created_at: text('created_at').notNull(),
+  updated_at: text('updated_at').notNull(),
 });
 
 // Appointments table
@@ -33,12 +33,12 @@ export const appointments = sqliteTable('appointments', {
   name: text('name').notNull(),
   email: text('email').notNull(),
   phone: text('phone').notNull(),
-  preferredDate: text('preferred_date').notNull(),
-  preferredTime: text('preferred_time').notNull(),
-  occasionType: text('occasion_type').notNull(),
+  preferred_date: text('preferred_date').notNull(),
+  preferred_time: text('preferred_time').notNull(),
+  occasion_type: text('occasion_type').notNull(),
   message: text('message'),
   status: text('status').notNull().default('pending'),
-  createdAt: text('created_at').notNull(),
+  created_at: text('created_at').notNull(),
 });
 
 // Testimonials table
@@ -49,8 +49,8 @@ export const testimonials = sqliteTable('testimonials', {
   content: text('content').notNull(),
   rating: integer('rating').notNull(),
   image: text('image').notNull(),
-  isFeatured: integer('is_featured', { mode: 'boolean' }).default(true),
-  createdAt: text('created_at').notNull(),
+  is_featured: integer('is_featured', { mode: 'boolean' }).default(true),
+  created_at: text('created_at').notNull(),
 });
 
 // Stories table
@@ -62,19 +62,19 @@ export const stories = sqliteTable('stories', {
   excerpt: text('excerpt').notNull(),
   content: text('content').notNull(),
   image: text('image').notNull(),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull(),
+  created_at: text('created_at').notNull(),
+  updated_at: text('updated_at').notNull(),
 });
 
 // Comments table
 export const comments = sqliteTable('comments', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  storyId: integer('story_id').references(() => stories.id).notNull(),
+  story_id: integer('story_id').references(() => stories.id).notNull(),
   name: text('name').notNull(),
   email: text('email').notNull(),
   message: text('message').notNull(),
   status: text('status').notNull().default('pending'),
-  createdAt: text('created_at').notNull(),
+  created_at: text('created_at').notNull(),
 });
 
 // Categories table
@@ -82,8 +82,8 @@ export const categories = sqliteTable('categories', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
-  displayOrder: integer('display_order').notNull().default(0),
-  createdAt: text('created_at').notNull(),
+  display_order: integer('display_order').notNull().default(0),
+  created_at: text('created_at').notNull(),
 });
 
 // Tracking codes table
@@ -91,7 +91,7 @@ export const trackingCodes = sqliteTable('tracking_codes', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   type: text('type').notNull().unique(),
   code: text('code').notNull(),
-  isActive: integer('is_active', { mode: 'boolean' }).default(true),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull(),
+  is_active: integer('is_active', { mode: 'boolean' }).default(true),
+  created_at: text('created_at').notNull(),
+  updated_at: text('updated_at').notNull(),
 });
