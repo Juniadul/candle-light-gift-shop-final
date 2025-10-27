@@ -56,6 +56,7 @@ const AdminProducts = () => {
   const [submitting, setSubmitting] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [imageError, setImageError] = useState(false);
+  const [imageKey, setImageKey] = useState(Date.now()); // Add timestamp key for cache busting
 
   const [formData, setFormData] = useState({
     name: "",
@@ -138,6 +139,7 @@ const AdminProducts = () => {
     setEditingProduct(null);
     setImageUrl("");
     setImageError(false);
+    setImageKey(Date.now());
   };
 
   const handleEdit = (product: any) => {
@@ -152,6 +154,7 @@ const AdminProducts = () => {
     });
     setImageUrl(convertedImage);
     setImageError(false);
+    setImageKey(Date.now());
     setIsDialogOpen(true);
   };
 
@@ -171,13 +174,16 @@ const AdminProducts = () => {
     // Convert Google Drive link to direct URL
     const convertedUrl = convertGoogleDriveUrl(value);
     
+    // Update all states with new timestamp for cache busting
+    const newTimestamp = Date.now();
     setFormData({ ...formData, image: convertedUrl });
     setImageUrl(convertedUrl);
     setImageError(false);
+    setImageKey(newTimestamp); // Force complete re-render with new key
     
     // Show toast if conversion happened
     if (convertedUrl !== value && value.includes('drive.google.com')) {
-      toast.info("Google Drive link converted to direct image URL");
+      toast.success("✅ Google Drive link converted to direct image URL");
     }
   };
 
@@ -303,10 +309,10 @@ const AdminProducts = () => {
                   </p>
                   {imageUrl && (
                     <div className="mt-3 space-y-2">
-                      <div className="relative rounded-lg overflow-hidden border-2 border-primary/20">
+                      <div className="relative rounded-lg overflow-hidden border-2 border-primary/20 bg-muted">
                         <img
-                          key={imageUrl}
-                          src={imageUrl}
+                          key={`preview-${imageKey}`}
+                          src={`${imageUrl}?t=${imageKey}`}
                           alt="Preview"
                           className="w-full h-48 object-cover"
                           onError={() => setImageError(true)}
