@@ -24,22 +24,14 @@ import { toast } from "sonner";
 import { Plus, Edit, Trash2, Loader2 } from "lucide-react";
 import * as db from "@/lib/database";
 
-const categories = [
-  "Paper Invitations",
-  "Acrylic Invitations",
-  "Semi-transparent",
-  "Favor Boxes",
-  "Goody Bags",
-  "Accessories",
-  "Dala",
-  "Gift Envelopes",
-];
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=80";
 
 const AdminProducts = () => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -57,7 +49,15 @@ const AdminProducts = () => {
       navigate("/admin/login");
     }
     loadProducts();
+    loadCategories();
   }, [navigate]);
+
+  const loadCategories = async () => {
+    const result = await db.getCategories();
+    if (result.success && result.data) {
+      setCategories(result.data);
+    }
+  };
 
   const loadProducts = async () => {
     setLoading(true);
@@ -79,7 +79,7 @@ const AdminProducts = () => {
       description: formData.description,
       price: parseFloat(formData.price),
       category: formData.category,
-      image: formData.image,
+      image: formData.image || FALLBACK_IMAGE,
     };
 
     let result;
@@ -231,14 +231,15 @@ const AdminProducts = () => {
                       onValueChange={(value) =>
                         setFormData({ ...formData, category: value })
                       }
+                      required
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
+                          <SelectItem key={cat.id} value={cat.slug}>
+                            {cat.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -248,22 +249,24 @@ const AdminProducts = () => {
 
                 <div>
                   <label htmlFor="image" className="block text-sm font-semibold mb-2">
-                    Image URL *
+                    Image URL
                   </label>
                   <Input
                     id="image"
-                    required
                     value={formData.image}
                     onChange={(e) =>
                       setFormData({ ...formData, image: e.target.value })
                     }
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="https://example.com/image.jpg (optional)"
                   />
                   {formData.image && (
                     <img
                       src={formData.image}
                       alt="Preview"
                       className="mt-2 w-full h-48 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_IMAGE;
+                      }}
                     />
                   )}
                 </div>
@@ -328,9 +331,12 @@ const AdminProducts = () => {
                 <Card key={product.id} className="overflow-hidden group">
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={product.image}
+                      src={product.image || FALLBACK_IMAGE}
                       alt={product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_IMAGE;
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                       <Button

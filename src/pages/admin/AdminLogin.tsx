@@ -16,7 +16,7 @@ const AdminLogin = () => {
     e.preventDefault();
     
     // Simple authentication (in production, use proper backend auth)
-    if (credentials.email === "admin@candlelightgiftshop.com" && credentials.password === "admin123") {
+    if (credentials.email === "admin@candlelightgiftshop.com" && credentials.password === "Ca112233candle@@") {
       localStorage.setItem("adminToken", "admin-logged-in");
       toast.success("Welcome back, Admin!");
       navigate("/admin/dashboard");

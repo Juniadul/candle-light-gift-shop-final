@@ -294,7 +294,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-semibold mb-1">Email</p>
-                      <p className="text-sm text-muted-foreground">juniadulislam549@gmail.com</p>
+                      <p className="text-sm text-muted-foreground">candlelightgiftshop1@gmail.com</p>
                     </div>
                   </div>
 

@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,11 +16,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email configuration
-    const recipientEmail = 'juniadulislam549@gmail.com';
+    const recipientEmail = 'candlelightgiftshop1@gmail.com';
     
     // Format email content
-    const emailContent = `
+    const emailSubject = `New Contact Form Submission from ${name}`;
+    const emailHtml = `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+      <br>
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, '<br>')}</p>
+    `;
+
+    const emailText = `
 New Contact Form Submission
 
 Name: ${name}
@@ -28,43 +41,54 @@ Message:
 ${message}
     `.trim();
 
-    console.log('Contact form submission:', {
-      name,
-      email,
-      phone,
-      message,
-      recipientEmail
-    });
+    // Send email using Resend
+    if (process.env.RESEND_API_KEY) {
+      try {
+        await resend.emails.send({
+          from: 'Candle Light Gift Shop <onboarding@resend.dev>',
+          to: recipientEmail,
+          replyTo: email,
+          subject: emailSubject,
+          html: emailHtml,
+          text: emailText,
+        });
 
-    // In a production environment, you would integrate with an email service like:
-    // - SendGrid
-    // - AWS SES
-    // - Resend
-    // - Nodemailer with SMTP
-    
-    // For now, we'll log the email and return success
-    // You'll need to set up email service with API keys in environment variables
-    
-    // Example with Resend (commented out - requires setup):
-    /*
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: 'Contact Form <noreply@yourdomain.com>',
-      to: recipientEmail,
-      replyTo: email,
-      subject: `New Contact Form: ${name}`,
-      text: emailContent,
-    });
-    */
+        return NextResponse.json(
+          { success: true, message: 'Message sent successfully!' },
+          { status: 200 }
+        );
+      } catch (emailError: any) {
+        console.error('Email sending error:', emailError);
+        
+        // Still return success to user but log the error
+        return NextResponse.json(
+          { 
+            success: true, 
+            message: 'Message received. Email notification pending.',
+            warning: 'Email service configuration needed'
+          },
+          { status: 200 }
+        );
+      }
+    } else {
+      // No API key configured
+      console.log('Contact form submission (email not configured):', {
+        name,
+        email,
+        phone,
+        message,
+        recipientEmail
+      });
 
-    return NextResponse.json(
-      { 
-        success: true, 
-        message: 'Message received successfully',
-        note: 'Email sending requires email service configuration'
-      },
-      { status: 200 }
-    );
+      return NextResponse.json(
+        { 
+          success: true, 
+          message: 'Message received successfully',
+          note: 'Email sending requires RESEND_API_KEY in environment variables'
+        },
+        { status: 200 }
+      );
+    }
 
   } catch (error) {
     console.error('Contact form error:', error);
