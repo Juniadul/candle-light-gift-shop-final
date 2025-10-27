@@ -142,7 +142,7 @@ const AdminDashboard = () => {
                       <p className="text-sm text-muted-foreground">{order.customer_name || order.customer_email}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">৳{order.total_amount.toLocaleString()}</p>
+                      <p className="font-semibold">৳{(order.total_amount || 0).toLocaleString()}</p>
                       <p className="text-sm text-muted-foreground capitalize">{order.status}</p>
                     </div>
                   </div>
