@@ -26,6 +26,26 @@ import * as db from "@/lib/database";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=80";
 
+// Convert Google Drive sharing link to direct image URL
+const convertGoogleDriveUrl = (url: string): string => {
+  if (!url) return url;
+  
+  // Check if it's a Google Drive link
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^\/]+)/);
+  if (driveMatch && driveMatch[1]) {
+    const fileId = driveMatch[1];
+    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+  }
+  
+  // Check for open link format
+  const openMatch = url.match(/drive\.google\.com\/open\?id=([^&]+)/);
+  if (openMatch && openMatch[1]) {
+    return `https://drive.google.com/uc?export=view&id=${openMatch[1]}`;
+  }
+  
+  return url;
+};
+
 const AdminProducts = () => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -122,14 +142,15 @@ const AdminProducts = () => {
 
   const handleEdit = (product: any) => {
     setEditingProduct(product);
+    const convertedImage = convertGoogleDriveUrl(product.image);
     setFormData({
       name: product.name,
       description: product.description,
       price: product.price.toString(),
       category: product.category,
-      image: product.image,
+      image: convertedImage,
     });
-    setImageUrl(product.image);
+    setImageUrl(convertedImage);
     setImageError(false);
     setIsDialogOpen(true);
   };
@@ -147,9 +168,17 @@ const AdminProducts = () => {
   };
 
   const handleImageUrlChange = (value: string) => {
-    setFormData({ ...formData, image: value });
-    setImageUrl(value);
+    // Convert Google Drive link to direct URL
+    const convertedUrl = convertGoogleDriveUrl(value);
+    
+    setFormData({ ...formData, image: convertedUrl });
+    setImageUrl(convertedUrl);
     setImageError(false);
+    
+    // Show toast if conversion happened
+    if (convertedUrl !== value && value.includes('drive.google.com')) {
+      toast.info("Google Drive link converted to direct image URL");
+    }
   };
 
   return (
@@ -267,8 +296,11 @@ const AdminProducts = () => {
                     id="image"
                     value={formData.image}
                     onChange={(e) => handleImageUrlChange(e.target.value)}
-                    placeholder="https://example.com/image.jpg (optional)"
+                    placeholder="Paste image URL or Google Drive sharing link"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    💡 Tip: Google Drive links will be automatically converted to direct image URLs
+                  </p>
                   {imageUrl && (
                     <div className="mt-3 space-y-2">
                       <div className="relative rounded-lg overflow-hidden border-2 border-primary/20">
@@ -282,12 +314,12 @@ const AdminProducts = () => {
                         />
                       </div>
                       <div className="text-xs space-y-1">
-                        <p className="text-muted-foreground">
-                          <span className="font-semibold">Attempting to load:</span> {imageUrl.substring(0, 60)}...
+                        <p className="text-muted-foreground break-all">
+                          <span className="font-semibold">Loading:</span> {imageUrl}
                         </p>
                         {imageError && (
                           <p className="text-destructive font-semibold">
-                            ⚠️ Failed to load image. Make sure the URL is a direct link to an image file (jpg, png, etc.)
+                            ⚠️ Failed to load image. Make sure the Google Drive file is set to "Anyone with the link can view"
                           </p>
                         )}
                       </div>
