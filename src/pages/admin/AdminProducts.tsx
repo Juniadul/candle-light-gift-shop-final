@@ -34,6 +34,7 @@ const AdminProducts = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [imageKey, setImageKey] = useState(0);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -114,6 +115,7 @@ const AdminProducts = () => {
       image: "",
     });
     setEditingProduct(null);
+    setImageKey(0);
   };
 
   const handleEdit = (product: any) => {
@@ -125,6 +127,7 @@ const AdminProducts = () => {
       category: product.category,
       image: product.image,
     });
+    setImageKey(Date.now());
     setIsDialogOpen(true);
   };
 
@@ -138,6 +141,11 @@ const AdminProducts = () => {
     } else {
       toast.error(result.error || "Failed to delete product");
     }
+  };
+
+  const handleImageUrlChange = (value: string) => {
+    setFormData({ ...formData, image: value });
+    setImageKey(Date.now()); // Force image refresh
   };
 
   return (
@@ -254,21 +262,24 @@ const AdminProducts = () => {
                   <Input
                     id="image"
                     value={formData.image}
-                    onChange={(e) =>
-                      setFormData({ ...formData, image: e.target.value })
-                    }
+                    onChange={(e) => handleImageUrlChange(e.target.value)}
                     placeholder="https://example.com/image.jpg (optional)"
                   />
                   {formData.image && (
-                    <img
-                      key={formData.image}
-                      src={formData.image}
-                      alt="Preview"
-                      className="mt-2 w-full h-48 object-cover rounded-lg"
-                      onError={(e) => {
-                        e.currentTarget.src = FALLBACK_IMAGE;
-                      }}
-                    />
+                    <div className="mt-2 relative">
+                      <img
+                        key={`preview-${imageKey}`}
+                        src={`${formData.image}${formData.image.includes('?') ? '&' : '?'}t=${imageKey}`}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-lg border-2 border-primary/20"
+                        onError={(e) => {
+                          e.currentTarget.src = FALLBACK_IMAGE;
+                        }}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Preview updates as you type
+                      </p>
+                    </div>
                   )}
                 </div>
 
