@@ -28,6 +28,14 @@ const Products = () => {
     loadCategories();
   }, []);
 
+  // Set initial category from URL params
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    }
+  }, [searchParams]);
+
   // Load products when filters change
   useEffect(() => {
     const loadProducts = async () => {
