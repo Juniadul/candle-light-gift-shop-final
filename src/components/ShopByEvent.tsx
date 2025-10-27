@@ -8,28 +8,28 @@ const events = [
     title: "Wedding",
     description: "Elegant invitations for your special day",
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80",
-    link: "/category/wedding",
+    category: "wedding",
   },
   {
     icon: Cake,
     title: "Birthday",
     description: "Celebrate life's milestones in style",
     image: "https://images.unsplash.com/photo-1558636508-e0db3814bd1d?w=500&q=80",
-    link: "/category/birthday",
+    category: "birthday",
   },
   {
     icon: Gift,
     title: "Anniversary",
     description: "Mark years of love and togetherness",
     image: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=500&q=80",
-    link: "/category/anniversary",
+    category: "anniversary",
   },
   {
     icon: Sparkles,
     title: "Special Events",
     description: "For all your celebration needs",
     image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&q=80",
-    link: "/category/special",
+    category: "special-events",
   },
 ];
 
@@ -49,7 +49,7 @@ const ShopByEvent = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {events.map((event) => (
-            <Link key={event.title} to={event.link} className="group">
+            <Link key={event.title} to={`/products?category=${event.category}`} className="group">
               <Card className="overflow-hidden border-2 hover:border-primary transition-all duration-300 hover:shadow-xl">
                 <div className="relative h-48 md:h-56 overflow-hidden">
                   <img

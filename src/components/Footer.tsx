@@ -44,8 +44,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-2 text-sm">
-              <li>Support: 01797414949</li>
-              <li>Email: info@candlelightgiftshop.com</li>
+              <li>Phone: +880 17 8080 6473</li>
+              <li>Email: juniadulislam549@gmail.com</li>
               <li>Hours: Mon-Sat 10AM-6PM</li>
             </ul>
           </div>

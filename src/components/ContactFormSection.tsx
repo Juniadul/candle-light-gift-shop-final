@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Loader2 } from "lucide-react";
 
 const ContactFormSection = () => {
   const [formData, setFormData] = useState({
@@ -12,11 +12,30 @@ const ContactFormSection = () => {
     phone: "",
     message: "",
   });
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent successfully! We'll get back to you soon.");
-    setFormData({ name: "", email: "", phone: "", message: "" });
+    setSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        toast.success("Message sent successfully! We'll get back to you soon.");
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        toast.error("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -57,7 +76,7 @@ const ContactFormSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Phone</h4>
-                    <p className="text-muted-foreground">+880 1XXX-XXXXXX</p>
+                    <p className="text-muted-foreground">+880 17 8080 6473</p>
                   </div>
                 </div>
 
@@ -68,7 +87,7 @@ const ContactFormSection = () => {
                   <div>
                     <h4 className="font-semibold mb-1">Email</h4>
                     <p className="text-muted-foreground">
-                      info@savethedate.com.bd
+                      juniadulislam549@gmail.com
                     </p>
                   </div>
                 </div>
@@ -107,6 +126,7 @@ const ContactFormSection = () => {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="Enter your name"
+                  disabled={submitting}
                 />
               </div>
 
@@ -123,6 +143,7 @@ const ContactFormSection = () => {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="your@email.com"
+                  disabled={submitting}
                 />
               </div>
 
@@ -138,6 +159,7 @@ const ContactFormSection = () => {
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   placeholder="+880 1XXX-XXXXXX"
+                  disabled={submitting}
                 />
               </div>
 
@@ -154,6 +176,7 @@ const ContactFormSection = () => {
                   }
                   placeholder="Tell us about your requirements..."
                   className="min-h-[120px]"
+                  disabled={submitting}
                 />
               </div>
 
@@ -162,8 +185,16 @@ const ContactFormSection = () => {
                 variant="gradient"
                 size="lg"
                 className="w-full uppercase"
+                disabled={submitting}
               >
-                Send Message
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  'Send Message'
+                )}
               </Button>
             </form>
           </div>

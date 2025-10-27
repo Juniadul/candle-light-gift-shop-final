@@ -7,25 +7,25 @@ const accessories = [
     name: "Favor Boxes",
     image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&q=80",
     price: "From ৳150",
-    link: "/products?category=favor-box",
+    category: "favor-boxes",
   },
   {
     name: "Gift Envelopes",
     image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=500&q=80",
     price: "From ৳80",
-    link: "/products?category=gift-envelope",
+    category: "gift-envelopes",
   },
   {
     name: "Goody Bags",
     image: "https://images.unsplash.com/photo-1549492423-400259a2e574?w=500&q=80",
     price: "From ৳200",
-    link: "/products?category=goody-bag",
+    category: "goody-bags",
   },
   {
     name: "Wedding Accessories",
     image: "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=500&q=80",
     price: "From ৳300",
-    link: "/products?category=accessories",
+    category: "accessories",
   },
 ];
 
@@ -51,7 +51,7 @@ const WeddingAccessories = () => {
               key={item.name}
               className="group overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
-              <Link to={item.link}>
+              <Link to={`/products?category=${item.category}`}>
                 <div className="relative h-64 overflow-hidden">
                   <img
                     src={item.image}
@@ -72,7 +72,7 @@ const WeddingAccessories = () => {
         <div className="text-center">
           <Link to="/products">
             <Button variant="gradient" size="lg" className="uppercase">
-              View All Accessories
+              View All Products
             </Button>
           </Link>
         </div>

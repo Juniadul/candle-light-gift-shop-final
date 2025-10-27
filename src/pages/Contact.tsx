@@ -52,6 +52,22 @@ const Contact = () => {
       
       setSubmitting(true);
       
+      // Send email notification
+      try {
+        await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            message: `Appointment Request:\nDate: ${formData.preferredDate}\nTime: ${formData.preferredTime}\nOccasion: ${formData.occasionType}\n\n${formData.message || 'No additional message'}`
+          })
+        });
+      } catch (emailError) {
+        console.error('Failed to send email notification:', emailError);
+      }
+      
       const result = await db.createAppointment({
         name: formData.name,
         email: formData.email,
@@ -268,8 +284,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-semibold mb-1">Phone</p>
-                      <p className="text-sm text-muted-foreground">01797414949</p>
-                      <p className="text-sm text-muted-foreground">01511181952</p>
+                      <p className="text-sm text-muted-foreground">+880 17 8080 6473</p>
                     </div>
                   </div>
 
@@ -279,7 +294,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-semibold mb-1">Email</p>
-                      <p className="text-sm text-muted-foreground">info@savethedate.com.bd</p>
+                      <p className="text-sm text-muted-foreground">juniadulislam549@gmail.com</p>
                     </div>
                   </div>
 
