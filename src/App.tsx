@@ -13,6 +13,7 @@ import InvitationStories from "@/pages/InvitationStories";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminProducts from "@/pages/admin/AdminProducts";
+import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import NotFound from "@/pages/NotFound";
@@ -49,6 +50,7 @@ const App = () => {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/products" element={<AdminProducts />} />
+              <Route path="/admin/categories" element={<AdminCategories />} />
               <Route path="/admin/orders" element={<AdminOrders />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
             </Routes>

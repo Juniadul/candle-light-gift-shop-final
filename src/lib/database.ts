@@ -303,6 +303,58 @@ export const getCategories = async () => {
   }
 };
 
+export const createCategory = async (category: {
+  name: string;
+  slug: string;
+  displayOrder?: number;
+}) => {
+  try {
+    const timestamp = new Date().toISOString();
+    const newCategory = await db.insert(categories).values({
+      name: category.name,
+      slug: category.slug,
+      display_order: category.displayOrder || 0,
+      created_at: timestamp,
+    }).returning();
+    return { success: true, data: newCategory[0] };
+  } catch (error) {
+    console.error('Failed to create category:', error);
+    return { success: false, error: 'Failed to create category' };
+  }
+};
+
+export const updateCategory = async (id: number, category: Partial<{
+  name: string;
+  slug: string;
+  displayOrder: number;
+}>) => {
+  try {
+    const updateData: any = {};
+    if (category.name !== undefined) updateData.name = category.name;
+    if (category.slug !== undefined) updateData.slug = category.slug;
+    if (category.displayOrder !== undefined) updateData.display_order = category.displayOrder;
+
+    const updated = await db.update(categories)
+      .set(updateData)
+      .where(eq(categories.id, id))
+      .returning();
+    return { success: true, data: updated[0] };
+  } catch (error) {
+    console.error('Failed to update category:', error);
+    return { success: false, error: 'Failed to update category' };
+  }
+};
+
+export const deleteCategory = async (id: number) => {
+  try {
+    await db.delete(categories).where(eq(categories.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete category:', error);
+    return { success: false, error: 'Failed to delete category' };
+  }
+};
+
 // Tracking Codes API
 export const getTrackingCodes = async () => {
   try {

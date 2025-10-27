@@ -52,7 +52,7 @@ const AdminLogin = () => {
                 required
                 value={credentials.email}
                 onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
-                placeholder="admin@candlelightgiftshop.com"
+                placeholder="Enter your email"
                 className="pl-10"
               />
             </div>
@@ -70,7 +70,7 @@ const AdminLogin = () => {
                 required
                 value={credentials.password}
                 onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                placeholder="••••••••"
+                placeholder="Enter your password"
                 className="pl-10"
               />
             </div>
@@ -80,10 +80,6 @@ const AdminLogin = () => {
             Sign In
           </Button>
         </form>
-
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          Demo credentials: admin@candlelightgiftshop.com / admin123
-        </p>
       </div>
     </div>
   );

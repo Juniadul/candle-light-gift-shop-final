@@ -22,7 +22,7 @@ const Header = () => {
     <header className="w-full bg-background border-b border-border sticky top-0 z-50 backdrop-blur-sm bg-background/95">
       {/* Top Bar */}
       <div className="bg-gradient-hero text-primary-foreground py-2 px-4 text-center text-sm">
-        FREE GROUND SHIPPING FOR MORE THAN $99 PIECES OF ORDER
+        Free shipping over 100 piece of order
       </div>
 
       {/* Main Header */}

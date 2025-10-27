@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, SlidersHorizontal } from "lucide-react";
 import * as db from "@/lib/database";
 
 const Products = () => {
@@ -22,11 +22,7 @@ const Products = () => {
     const loadCategories = async () => {
       const result = await db.getCategories();
       if (result.success && result.data) {
-        // Add "All Products" category at the beginning
-        setCategories([
-          { id: 0, name: 'All Products', slug: 'all' },
-          ...result.data
-        ]);
+        setCategories(result.data);
       }
     };
     loadCategories();
@@ -70,7 +66,7 @@ const Products = () => {
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto">
           <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-hero bg-clip-text text-transparent">
-            Our Product Collection
+            Shop Our Products
           </h1>
 
           {/* Search Results Info */}
@@ -82,18 +78,35 @@ const Products = () => {
             </div>
           )}
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {categories.map(cat => (
+          {/* Filter Section */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <SlidersHorizontal className="w-5 h-5 text-primary" />
+              <h2 className="text-xl font-semibold">Shop by Collection</h2>
+            </div>
+            
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap gap-3">
               <Button
-                key={cat.id}
-                variant={selectedCategory === (cat.slug || 'all') ? "default" : "outline"}
-                onClick={() => setSelectedCategory(cat.slug || 'all')}
-                className="uppercase text-sm"
+                variant={selectedCategory === 'all' ? "default" : "outline"}
+                onClick={() => setSelectedCategory('all')}
+                className="text-sm font-medium"
+                size="sm"
               >
-                {cat.name}
+                All Products
               </Button>
-            ))}
+              {categories.map(cat => (
+                <Button
+                  key={cat.id}
+                  variant={selectedCategory === cat.slug ? "default" : "outline"}
+                  onClick={() => setSelectedCategory(cat.slug)}
+                  className="text-sm font-medium"
+                  size="sm"
+                >
+                  {cat.name}
+                </Button>
+              ))}
+            </div>
           </div>
 
           {/* Loading State */}
