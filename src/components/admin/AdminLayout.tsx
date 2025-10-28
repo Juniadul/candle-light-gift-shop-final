@@ -11,7 +11,8 @@ import {
   Home,
   FolderTree,
   MessageSquareQuote,
-  BookHeart
+  BookHeart,
+  Image
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -33,6 +34,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 
   const menuItems = [
     { path: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/admin/hero-slides", icon: Image, label: "Hero Slides" },
     { path: "/admin/products", icon: Package, label: "Products" },
     { path: "/admin/categories", icon: FolderTree, label: "Categories" },
     { path: "/admin/orders", icon: ShoppingCart, label: "Orders" },

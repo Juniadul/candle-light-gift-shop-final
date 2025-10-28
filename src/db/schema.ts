@@ -95,3 +95,18 @@ export const trackingCodes = sqliteTable('tracking_codes', {
   created_at: text('created_at').notNull(),
   updated_at: text('updated_at').notNull(),
 });
+
+// Hero Slides table
+export const heroSlides = sqliteTable('hero_slides', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  subtitle: text('subtitle').notNull(),
+  description: text('description').notNull(),
+  image: text('image').notNull(),
+  buttonText: text('button_text').notNull(),
+  buttonLink: text('button_link').notNull(),
+  displayOrder: integer('display_order').notNull().default(0),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  createdAt: text('created_at').notNull(),
+  updatedAt: text('updated_at').notNull(),
+});

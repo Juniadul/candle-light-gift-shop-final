@@ -8,6 +8,13 @@
       "when": 1761552220948,
       "tag": "0000_cold_killraven",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1761621306144,
+      "tag": "0001_dry_plazm",
+      "breakpoints": true
     }
   ]
 }

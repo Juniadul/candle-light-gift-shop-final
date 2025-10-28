@@ -17,6 +17,7 @@ import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminTestimonials from "@/pages/admin/AdminTestimonials";
 import AdminStories from "@/pages/admin/AdminStories";
+import AdminHeroSlides from "@/pages/admin/AdminHeroSlides";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import NotFound from "@/pages/NotFound";
 import { Toaster } from "@/components/ui/sonner";
@@ -51,6 +52,7 @@ const App = () => {
               {/* Admin Routes */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/hero-slides" element={<AdminHeroSlides />} />
               <Route path="/admin/products" element={<AdminProducts />} />
               <Route path="/admin/categories" element={<AdminCategories />} />
               <Route path="/admin/orders" element={<AdminOrders />} />
