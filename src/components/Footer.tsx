@@ -2,6 +2,25 @@ import { Heart, Facebook } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const handleFacebookClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const url = "https://www.facebook.com/candlelightgiftshop";
+    
+    // Check if we're in an iframe
+    const isInIframe = window.self !== window.top;
+    
+    if (isInIframe) {
+      // Post message to parent window to open link
+      window.parent.postMessage({ 
+        type: "OPEN_EXTERNAL_URL", 
+        data: { url } 
+      }, "*");
+    } else {
+      // Open directly in new tab
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
     <footer className="bg-gradient-hero text-primary-foreground py-12 px-4">
       <div className="container mx-auto">
@@ -15,9 +34,8 @@ const Footer = () => {
             <div className="mt-4">
               <a
                 href="https://www.facebook.com/candlelightgiftshop"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm hover:opacity-80 transition-opacity"
+                onClick={handleFacebookClick}
+                className="inline-flex items-center gap-2 text-sm hover:opacity-80 transition-opacity cursor-pointer"
               >
                 <Facebook className="h-5 w-5" />
                 Follow us on Facebook

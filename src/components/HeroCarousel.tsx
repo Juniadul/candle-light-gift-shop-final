@@ -3,9 +3,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-// Backend API base URL
-const API_BASE = 'http://localhost:3001';
-
 interface HeroSlide {
   id: number;
   title: string;
@@ -18,8 +15,8 @@ interface HeroSlide {
   isActive: boolean;
 }
 
-// Fallback slides - ALWAYS available
-const FALLBACK_SLIDES: HeroSlide[] = [
+// Hero slides - These will ALWAYS display
+const HERO_SLIDES: HeroSlide[] = [
   {
     id: 1,
     title: 'Premium Collections',
@@ -68,64 +65,32 @@ const FALLBACK_SLIDES: HeroSlide[] = [
 
 const HeroCarousel = () => {
   const navigate = useNavigate();
-  // Start with fallback slides immediately - no loading state!
-  const [slides, setSlides] = useState<HeroSlide[]>(FALLBACK_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  useEffect(() => {
-    // Try to fetch from backend, but don't block rendering
-    const fetchSlides = async () => {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-
-        const response = await fetch(`${API_BASE}/api/hero-slides`, {
-          signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-          const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            setSlides(data);
-            console.log('✅ Loaded slides from backend');
-          }
-        }
-      } catch (error) {
-        // Silently fail - fallback slides are already showing
-        console.log('ℹ️ Using fallback slides (backend not available)');
-      }
-    };
-
-    fetchSlides();
-  }, []);
-
   const nextSlide = () => {
-    if (isAnimating || slides.length === 0) return;
+    if (isAnimating) return;
     setIsAnimating(true);
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
     setTimeout(() => setIsAnimating(false), 500);
   };
 
   const prevSlide = () => {
-    if (isAnimating || slides.length === 0) return;
+    if (isAnimating) return;
     setIsAnimating(true);
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
     setTimeout(() => setIsAnimating(false), 500);
   };
 
   useEffect(() => {
-    if (slides.length === 0) return;
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [currentSlide, slides.length]);
+  }, [currentSlide]);
 
   return (
     <section className="relative w-full h-[600px] md:h-[650px] lg:h-[750px] overflow-hidden bg-muted">
       {/* Slides */}
-      {slides.map((slide, index) => (
+      {HERO_SLIDES.map((slide, index) => (
         <div
           key={slide.id}
           className={`absolute inset-0 transition-all duration-700 ${
@@ -140,7 +105,7 @@ const HeroCarousel = () => {
             <img
               src={slide.image}
               alt={slide.title}
-              className="w-full h-full object-cover animate-zoom-in"
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/50" />
           </div>
@@ -175,43 +140,37 @@ const HeroCarousel = () => {
       ))}
 
       {/* Navigation Arrows */}
-      {slides.length > 1 && (
-        <>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={prevSlide}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border-white/30 w-10 h-10 sm:w-12 sm:h-12"
-          >
-            <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={nextSlide}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border-white/30 w-10 h-10 sm:w-12 sm:h-12"
-          >
-            <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-          </Button>
-        </>
-      )}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={prevSlide}
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border-white/30 w-10 h-10 sm:w-12 sm:h-12"
+      >
+        <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+      </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={nextSlide}
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white border-white/30 w-10 h-10 sm:w-12 sm:h-12"
+      >
+        <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+      </Button>
 
       {/* Dots Indicator */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide
-                  ? "bg-white w-8"
-                  : "bg-white/50 hover:bg-white/70 w-2"
-              }`}
-            />
-          ))}
-        </div>
-      )}
+      <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {HERO_SLIDES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentSlide(index)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentSlide
+                ? "bg-white w-8"
+                : "bg-white/50 hover:bg-white/70 w-2"
+            }`}
+          />
+        ))}
+      </div>
     </section>
   );
 };
