@@ -345,6 +345,7 @@ export const createStory = async (story: {
     const newStory = await db.insert(stories).values({
       ...story,
       created_at: timestamp,
+      updated_at: timestamp,
     }).returning();
     return { success: true, data: newStory[0] };
   } catch (error) {
@@ -363,7 +364,7 @@ export const updateStory = async (id: number, story: Partial<{
 }>) => {
   try {
     const updated = await db.update(stories)
-      .set(story)
+      .set({ ...story, updated_at: new Date().toISOString() })
       .where(eq(stories.id, id))
       .returning();
     return { success: true, data: updated[0] };

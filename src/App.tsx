@@ -16,6 +16,7 @@ import AdminProducts from "@/pages/admin/AdminProducts";
 import AdminCategories from "@/pages/admin/AdminCategories";
 import AdminOrders from "@/pages/admin/AdminOrders";
 import AdminTestimonials from "@/pages/admin/AdminTestimonials";
+import AdminStories from "@/pages/admin/AdminStories";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import NotFound from "@/pages/NotFound";
 import { Toaster } from "@/components/ui/sonner";
@@ -54,6 +55,7 @@ const App = () => {
               <Route path="/admin/categories" element={<AdminCategories />} />
               <Route path="/admin/orders" element={<AdminOrders />} />
               <Route path="/admin/testimonials" element={<AdminTestimonials />} />
+              <Route path="/admin/stories" element={<AdminStories />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
             </Routes>
           </CartProvider>
