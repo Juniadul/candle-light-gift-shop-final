@@ -18,7 +18,7 @@ interface HeroSlide {
   isActive: boolean;
 }
 
-// Fallback slides if API is unavailable
+// Fallback slides - ALWAYS available
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
     id: 1,
@@ -68,32 +68,34 @@ const FALLBACK_SLIDES: HeroSlide[] = [
 
 const HeroCarousel = () => {
   const navigate = useNavigate();
-  const [slides, setSlides] = useState<HeroSlide[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Start with fallback slides immediately - no loading state!
+  const [slides, setSlides] = useState<HeroSlide[]>(FALLBACK_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
+    // Try to fetch from backend, but don't block rendering
     const fetchSlides = async () => {
       try {
-        const response = await fetch(`${API_BASE}/api/hero-slides`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+
+        const response = await fetch(`${API_BASE}/api/hero-slides`, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
         if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
             setSlides(data);
-          } else {
-            // Use fallback if no slides in database
-            setSlides(FALLBACK_SLIDES);
+            console.log('✅ Loaded slides from backend');
           }
-        } else {
-          // API not available, use fallback
-          setSlides(FALLBACK_SLIDES);
         }
       } catch (error) {
-        console.log('Using fallback slides (backend may not be running)');
-        setSlides(FALLBACK_SLIDES);
-      } finally {
-        setLoading(false);
+        // Silently fail - fallback slides are already showing
+        console.log('ℹ️ Using fallback slides (backend not available)');
       }
     };
 
@@ -119,28 +121,6 @@ const HeroCarousel = () => {
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [currentSlide, slides.length]);
-
-  if (loading) {
-    return (
-      <section className="relative w-full h-[600px] md:h-[650px] lg:h-[750px] bg-muted flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading slides...</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (slides.length === 0) {
-    return (
-      <section className="relative w-full h-[600px] md:h-[650px] lg:h-[750px] bg-muted flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">No slides available</h2>
-          <p className="text-muted-foreground">Please add hero slides in the admin panel</p>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="relative w-full h-[600px] md:h-[650px] lg:h-[750px] overflow-hidden bg-muted">
