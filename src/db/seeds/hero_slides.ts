@@ -2,9 +2,8 @@ import { db } from '@/db';
 import { heroSlides } from '@/db/schema';
 
 async function main() {
-    // Delete all existing records first
     await db.delete(heroSlides);
-    
+
     const sampleSlides = [
         {
             title: 'Premium Collections',

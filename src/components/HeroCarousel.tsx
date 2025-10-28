@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { db } from "@/db";
+import { heroSlides } from "@/db/schema";
+import { eq, asc } from "drizzle-orm";
 
 interface HeroSlide {
   id: number;
@@ -25,11 +28,11 @@ const HeroCarousel = () => {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const response = await fetch("/api/hero-slides");
-        if (response.ok) {
-          const data = await response.json();
-          setSlides(data);
-        }
+        const data = await db.select()
+          .from(heroSlides)
+          .where(eq(heroSlides.isActive, true))
+          .orderBy(asc(heroSlides.displayOrder));
+        setSlides(data);
       } catch (error) {
         console.error("Failed to load hero slides:", error);
       } finally {
