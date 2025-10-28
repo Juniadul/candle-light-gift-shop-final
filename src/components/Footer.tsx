@@ -1,4 +1,5 @@
-import { Heart } from "lucide-react";
+import { Heart, Facebook } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -11,6 +12,17 @@ const Footer = () => {
             <p className="text-sm opacity-90">
               Crafting beautiful bespoke wedding invitations and stationery to make your special day unforgettable.
             </p>
+            <div className="mt-4">
+              <a
+                href="https://www.facebook.com/candlelightgiftshop"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm hover:opacity-80 transition-opacity"
+              >
+                <Facebook className="h-5 w-5" />
+                Follow us on Facebook
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
@@ -18,24 +30,29 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="/about" className="hover:opacity-80 transition-opacity">
+                <Link to="/story" className="hover:opacity-80 transition-opacity">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/collections" className="hover:opacity-80 transition-opacity">
+                <Link to="/products" className="hover:opacity-80 transition-opacity">
                   Collections
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/custom" className="hover:opacity-80 transition-opacity">
-                  Custom Orders
-                </a>
+                <Link to="/invitation-stories" className="hover:opacity-80 transition-opacity">
+                  Customer Stories
+                </Link>
               </li>
               <li>
-                <a href="/contact" className="hover:opacity-80 transition-opacity">
+                <Link to="/contact" className="hover:opacity-80 transition-opacity">
                   Contact
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/track-order" className="hover:opacity-80 transition-opacity">
+                  Track Order
+                </Link>
               </li>
             </ul>
           </div>
@@ -46,7 +63,8 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li>Phone: +880 17 8080 6473</li>
               <li>Email: candlelightgiftshop1@gmail.com</li>
-              <li>Hours: Mon-Sat 10AM-6PM</li>
+              <li>Address: Nikunja-2, Khilkhet, Dhaka 1229</li>
+              <li>Hours: Mon-Sat 10AM-8PM</li>
             </ul>
           </div>
         </div>
