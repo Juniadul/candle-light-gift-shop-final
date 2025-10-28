@@ -332,6 +332,57 @@ export const getStoryById = async (id: number) => {
   }
 };
 
+export const createStory = async (story: {
+  title: string;
+  client: string;
+  date: string;
+  excerpt: string;
+  content: string;
+  image: string;
+}) => {
+  try {
+    const timestamp = new Date().toISOString();
+    const newStory = await db.insert(stories).values({
+      ...story,
+      created_at: timestamp,
+    }).returning();
+    return { success: true, data: newStory[0] };
+  } catch (error) {
+    console.error('Failed to create story:', error);
+    return { success: false, error: 'Failed to create story' };
+  }
+};
+
+export const updateStory = async (id: number, story: Partial<{
+  title: string;
+  client: string;
+  date: string;
+  excerpt: string;
+  content: string;
+  image: string;
+}>) => {
+  try {
+    const updated = await db.update(stories)
+      .set(story)
+      .where(eq(stories.id, id))
+      .returning();
+    return { success: true, data: updated[0] };
+  } catch (error) {
+    console.error('Failed to update story:', error);
+    return { success: false, error: 'Failed to update story' };
+  }
+};
+
+export const deleteStory = async (id: number) => {
+  try {
+    await db.delete(stories).where(eq(stories.id, id));
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete story:', error);
+    return { success: false, error: 'Failed to delete story' };
+  }
+};
+
 // Comments API
 export const getCommentsByStoryId = async (storyId: number) => {
   try {
