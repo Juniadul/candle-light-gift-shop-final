@@ -13,7 +13,14 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ 
           error: "Valid ID is required",
           code: "INVALID_ID" 
-        }, { status: 400 });
+        }, { 
+          status: 400,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+          }
+        });
       }
       
       const slide = await db.select()
@@ -25,36 +32,63 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ 
           error: 'Slide not found',
           code: 'SLIDE_NOT_FOUND' 
-        }, { status: 404 });
+        }, { 
+          status: 404,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+          }
+        });
       }
       
-      return NextResponse.json(slide[0]);
+      return NextResponse.json(slide[0], {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        }
+      });
     }
     
-    const active = searchParams.get('active');
-    const shouldFilterActive = active !== 'false';
+    // Get all active slides ordered by displayOrder
+    const slides = await db.select()
+      .from(heroSlides)
+      .where(eq(heroSlides.isActive, true))
+      .orderBy(asc(heroSlides.displayOrder));
     
-    let slides;
-    
-    if (shouldFilterActive) {
-      slides = await db.select()
-        .from(heroSlides)
-        .where(eq(heroSlides.isActive, true))
-        .orderBy(asc(heroSlides.displayOrder));
-    } else {
-      slides = await db.select()
-        .from(heroSlides)
-        .orderBy(asc(heroSlides.displayOrder));
-    }
-    
-    return NextResponse.json(slides);
+    return NextResponse.json(slides, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
+    });
     
   } catch (error) {
     console.error('GET error:', error);
     return NextResponse.json({ 
       error: 'Internal server error: ' + (error as Error).message 
-    }, { status: 500 });
+    }, { 
+      status: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
+    });
   }
+}
+
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }
 
 export async function POST(request: NextRequest) {

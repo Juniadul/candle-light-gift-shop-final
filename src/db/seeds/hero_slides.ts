@@ -2,15 +2,16 @@ import { db } from '@/db';
 import { heroSlides } from '@/db/schema';
 
 async function main() {
+    // Delete all existing records first
     await db.delete(heroSlides);
 
-    const sampleSlides = [
+    const sampleHeroSlides = [
         {
             title: 'Premium Collections',
             subtitle: 'Elegant Wedding Invitations',
-            description: 'Discover our exquisite collection of custom wedding invitations crafted with love and attention to detail',
-            image: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1920&h=1080&fit=crop',
-            buttonText: 'View Collections',
+            description: 'Discover our exquisite collection of handcrafted wedding invitations and gifts',
+            image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200',
+            buttonText: 'Shop Collections',
             buttonLink: '/products',
             displayOrder: 1,
             isActive: true,
@@ -20,9 +21,9 @@ async function main() {
         {
             title: 'Special Occasions',
             subtitle: 'Gifts That Create Memories',
-            description: 'From birthdays to anniversaries, find the perfect gift that speaks from the heart',
-            image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=1920&h=1080&fit=crop',
-            buttonText: 'Shop Gifts',
+            description: 'From birthdays to anniversaries, find the perfect gift for every celebration',
+            image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=1200',
+            buttonText: 'Browse Gifts',
             buttonLink: '/products',
             displayOrder: 2,
             isActive: true,
@@ -32,9 +33,9 @@ async function main() {
         {
             title: 'Custom Invitations',
             subtitle: 'Your Story, Beautifully Told',
-            description: 'Let us help you create personalized invitations that perfectly capture your special moments',
-            image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1920&h=1080&fit=crop',
-            buttonText: 'Start Designing',
+            description: 'Personalized invitations that make your special moments unforgettable',
+            image: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=1200',
+            buttonText: 'Customize Now',
             buttonLink: '/contact',
             displayOrder: 3,
             isActive: true,
@@ -44,9 +45,9 @@ async function main() {
         {
             title: 'Free Shipping',
             subtitle: 'Orders Over 100 Pieces',
-            description: 'Get free shipping on bulk orders - perfect for weddings, corporate events, and special celebrations',
-            image: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=1920&h=1080&fit=crop',
-            buttonText: 'Order Now',
+            description: 'Get free delivery on bulk orders. Perfect for weddings and large events',
+            image: 'https://images.unsplash.com/photo-1464047736614-af63643285bf?w=1200',
+            buttonText: 'Learn More',
             buttonLink: '/products',
             displayOrder: 4,
             isActive: true,
@@ -55,7 +56,7 @@ async function main() {
         },
     ];
 
-    await db.insert(heroSlides).values(sampleSlides);
+    await db.insert(heroSlides).values(sampleHeroSlides);
     
     console.log('✅ Hero slides seeder completed successfully');
 }

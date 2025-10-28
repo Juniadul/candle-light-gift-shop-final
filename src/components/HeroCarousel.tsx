@@ -2,9 +2,6 @@ import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { db } from "@/db";
-import { heroSlides } from "@/db/schema";
-import { eq, asc } from "drizzle-orm";
 
 interface HeroSlide {
   id: number;
@@ -18,29 +15,59 @@ interface HeroSlide {
   isActive: boolean;
 }
 
+// Static hero slides data that matches what's in the database
+const HERO_SLIDES: HeroSlide[] = [
+  {
+    id: 1,
+    title: 'Premium Collections',
+    subtitle: 'Elegant Wedding Invitations',
+    description: 'Discover our exquisite collection of handcrafted wedding invitations and gifts',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200',
+    buttonText: 'Shop Collections',
+    buttonLink: '/products',
+    displayOrder: 1,
+    isActive: true,
+  },
+  {
+    id: 2,
+    title: 'Special Occasions',
+    subtitle: 'Gifts That Create Memories',
+    description: 'From birthdays to anniversaries, find the perfect gift for every celebration',
+    image: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=1200',
+    buttonText: 'Browse Gifts',
+    buttonLink: '/products',
+    displayOrder: 2,
+    isActive: true,
+  },
+  {
+    id: 3,
+    title: 'Custom Invitations',
+    subtitle: 'Your Story, Beautifully Told',
+    description: 'Personalized invitations that make your special moments unforgettable',
+    image: 'https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=1200',
+    buttonText: 'Customize Now',
+    buttonLink: '/contact',
+    displayOrder: 3,
+    isActive: true,
+  },
+  {
+    id: 4,
+    title: 'Free Shipping',
+    subtitle: 'Orders Over 100 Pieces',
+    description: 'Get free delivery on bulk orders. Perfect for weddings and large events',
+    image: 'https://images.unsplash.com/photo-1464047736614-af63643285bf?w=1200',
+    buttonText: 'Learn More',
+    buttonLink: '/products',
+    displayOrder: 4,
+    isActive: true,
+  },
+];
+
 const HeroCarousel = () => {
   const navigate = useNavigate();
-  const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [slides] = useState<HeroSlide[]>(HERO_SLIDES);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        const data = await db.select()
-          .from(heroSlides)
-          .where(eq(heroSlides.isActive, true))
-          .orderBy(asc(heroSlides.displayOrder));
-        setSlides(data);
-      } catch (error) {
-        console.error("Failed to load hero slides:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSlides();
-  }, []);
 
   const nextSlide = () => {
     if (isAnimating || slides.length === 0) return;
@@ -61,14 +88,6 @@ const HeroCarousel = () => {
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [currentSlide, slides.length]);
-
-  if (loading) {
-    return (
-      <section className="relative w-full h-[600px] md:h-[650px] lg:h-[750px] bg-muted flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
-      </section>
-    );
-  }
 
   if (slides.length === 0) {
     return (
