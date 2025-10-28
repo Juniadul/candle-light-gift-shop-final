@@ -16,6 +16,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Plus, Edit, Trash2, Loader2, MoveUp, MoveDown, Eye, EyeOff } from "lucide-react";
 
+// Backend API base URL
+const API_BASE = 'http://localhost:3001';
+
 interface HeroSlide {
   id: number;
   title: string;
@@ -60,7 +63,7 @@ const AdminHeroSlides = () => {
   const loadSlides = async () => {
     setLoading(true);
     try {
-      const response = await fetch("/api/hero-slides?active=false");
+      const response = await fetch(`${API_BASE}/api/hero-slides?active=false`);
       if (response.ok) {
         const data = await response.json();
         setSlides(data);
@@ -92,7 +95,7 @@ const AdminHeroSlides = () => {
     try {
       let response;
       if (editingSlide) {
-        response = await fetch(`/api/hero-slides?id=${editingSlide.id}`, {
+        response = await fetch(`${API_BASE}/api/hero-slides?id=${editingSlide.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(slideData),
@@ -101,7 +104,7 @@ const AdminHeroSlides = () => {
           toast.success("Hero slide updated successfully!");
         }
       } else {
-        response = await fetch("/api/hero-slides", {
+        response = await fetch(`${API_BASE}/api/hero-slides`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(slideData),
@@ -159,7 +162,7 @@ const AdminHeroSlides = () => {
     if (!confirm("Are you sure you want to delete this hero slide?")) return;
 
     try {
-      const response = await fetch(`/api/hero-slides?id=${slideId}`, {
+      const response = await fetch(`${API_BASE}/api/hero-slides?id=${slideId}`, {
         method: "DELETE",
       });
       if (response.ok) {
@@ -176,7 +179,7 @@ const AdminHeroSlides = () => {
 
   const toggleActive = async (slide: HeroSlide) => {
     try {
-      const response = await fetch(`/api/hero-slides?id=${slide.id}`, {
+      const response = await fetch(`${API_BASE}/api/hero-slides?id=${slide.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ isActive: !slide.isActive }),

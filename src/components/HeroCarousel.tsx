@@ -3,6 +3,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
+// Backend API base URL
+const API_BASE = 'http://localhost:3001';
+
 interface HeroSlide {
   id: number;
   title: string;
@@ -15,8 +18,8 @@ interface HeroSlide {
   isActive: boolean;
 }
 
-// Static hero slides data that matches what's in the database
-const HERO_SLIDES: HeroSlide[] = [
+// Fallback slides if API is unavailable
+const FALLBACK_SLIDES: HeroSlide[] = [
   {
     id: 1,
     title: 'Premium Collections',
@@ -65,9 +68,37 @@ const HERO_SLIDES: HeroSlide[] = [
 
 const HeroCarousel = () => {
   const navigate = useNavigate();
-  const [slides] = useState<HeroSlide[]>(HERO_SLIDES);
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/api/hero-slides`);
+        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setSlides(data);
+          } else {
+            // Use fallback if no slides in database
+            setSlides(FALLBACK_SLIDES);
+          }
+        } else {
+          // API not available, use fallback
+          setSlides(FALLBACK_SLIDES);
+        }
+      } catch (error) {
+        console.log('Using fallback slides (backend may not be running)');
+        setSlides(FALLBACK_SLIDES);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlides();
+  }, []);
 
   const nextSlide = () => {
     if (isAnimating || slides.length === 0) return;
@@ -88,6 +119,17 @@ const HeroCarousel = () => {
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [currentSlide, slides.length]);
+
+  if (loading) {
+    return (
+      <section className="relative w-full h-[600px] md:h-[650px] lg:h-[750px] bg-muted flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading slides...</p>
+        </div>
+      </section>
+    );
+  }
 
   if (slides.length === 0) {
     return (
