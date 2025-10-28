@@ -20,10 +20,6 @@ const ContactFormSection = () => {
     setSubmitting(true);
 
     try {
-      // Using EmailJS to send emails
-      // You need to set up EmailJS account and add these env variables:
-      // VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, VITE_EMAILJS_PUBLIC_KEY
-      
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
@@ -43,7 +39,6 @@ const ContactFormSection = () => {
         );
         toast.success("Message sent successfully! We'll get back to you soon.");
       } else {
-        // Fallback: Just show success without sending email
         console.log('Contact form submission (EmailJS not configured):', formData);
         toast.success("Message received! We'll get back to you soon.");
       }
@@ -81,10 +76,10 @@ const ContactFormSection = () => {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">Banani Branch</h4>
+                    <h4 className="font-semibold mb-1">Nikunja-2</h4>
                     <p className="text-muted-foreground leading-relaxed">
-                      House 25, Road 11, Block F<br />
-                      Banani, Dhaka 1213
+                      Khilkhet<br />
+                      Dhaka 1229
                     </p>
                   </div>
                 </div>

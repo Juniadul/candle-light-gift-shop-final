@@ -315,8 +315,8 @@ const Contact = () => {
                       <MapPin className="w-6 h-6 text-accent" />
                     </div>
                     <div>
-                      <p className="font-semibold mb-1">Location</p>
-                      <p className="text-sm text-muted-foreground">Dhaka, Bangladesh</p>
+                      <p className="font-semibold mb-1">Visit Our Showroom</p>
+                      <p className="text-sm text-muted-foreground">Nikunja-2, Khilkhet<br />Dhaka 1229</p>
                     </div>
                   </div>
                 </div>
