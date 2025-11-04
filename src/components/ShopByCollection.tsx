@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import * as db from "@/lib/database";
 
+// Fallback image if category has no image
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&q=80';
+
 const ShopByCollection = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,9 +58,16 @@ const ShopByCollection = () => {
               className="group flex flex-col items-center animate-fade-in"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              {/* Circular Image Placeholder */}
-              <div className="relative w-full aspect-square rounded-full overflow-hidden mb-4 shadow-lg group-hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                <span className="text-4xl font-bold text-primary/40">{collection.name.charAt(0)}</span>
+              {/* Circular Image */}
+              <div className="relative w-full aspect-square rounded-full overflow-hidden mb-4 shadow-lg group-hover:shadow-2xl transition-all duration-500">
+                <img
+                  src={collection.imageUrl || FALLBACK_IMAGE}
+                  alt={collection.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    e.currentTarget.src = FALLBACK_IMAGE;
+                  }}
+                />
                 <div className="absolute inset-0 bg-gradient-hero opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
               </div>
 

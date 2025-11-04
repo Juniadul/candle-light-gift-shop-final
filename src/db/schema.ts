@@ -82,8 +82,9 @@ export const categories = sqliteTable('categories', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
-  display_order: integer('display_order').notNull().default(0),
-  created_at: text('created_at').notNull(),
+  displayOrder: integer('display_order').notNull().default(0),
+  imageUrl: text('image_url'),
+  createdAt: text('created_at').notNull(),
 });
 
 // Tracking codes table

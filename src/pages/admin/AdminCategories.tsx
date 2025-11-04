@@ -19,7 +19,8 @@ interface Category {
   id: number;
   name: string;
   slug: string;
-  display_order: number;
+  displayOrder: number;
+  imageUrl?: string | null;
 }
 
 const AdminCategories = () => {
@@ -31,6 +32,7 @@ const AdminCategories = () => {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
+    imageUrl: "",
   });
 
   useEffect(() => {
@@ -58,12 +60,14 @@ const AdminCategories = () => {
       setFormData({
         name: category.name,
         slug: category.slug,
+        imageUrl: category.imageUrl || "",
       });
     } else {
       setEditingCategory(null);
       setFormData({
         name: "",
         slug: "",
+        imageUrl: "",
       });
     }
     setIsDialogOpen(true);
@@ -72,7 +76,7 @@ const AdminCategories = () => {
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setEditingCategory(null);
-    setFormData({ name: "", slug: "" });
+    setFormData({ name: "", slug: "", imageUrl: "" });
   };
 
   const generateSlug = (name: string) => {
@@ -102,11 +106,13 @@ const AdminCategories = () => {
       result = await db.updateCategory(editingCategory.id, {
         name: formData.name,
         slug: formData.slug,
+        imageUrl: formData.imageUrl || null,
       });
     } else {
       result = await db.createCategory({
         name: formData.name,
         slug: formData.slug,
+        imageUrl: formData.imageUrl || null,
       });
     }
 
@@ -181,6 +187,13 @@ const AdminCategories = () => {
                   >
                     <div className="flex items-center gap-3">
                       <GripVertical className="w-5 h-5 text-muted-foreground cursor-move" />
+                      {category.imageUrl && (
+                        <img
+                          src={category.imageUrl}
+                          alt={category.name}
+                          className="w-12 h-12 rounded object-cover"
+                        />
+                      )}
                       <div>
                         <h3 className="font-semibold">{category.name}</h3>
                         <p className="text-sm text-muted-foreground">
@@ -253,6 +266,34 @@ const AdminCategories = () => {
               <p className="text-xs text-muted-foreground mt-1">
                 Auto-generated from name, but you can customize it
               </p>
+            </div>
+            <div>
+              <label htmlFor="imageUrl" className="block text-sm font-semibold mb-2">
+                Image URL
+              </label>
+              <Input
+                id="imageUrl"
+                value={formData.imageUrl}
+                onChange={(e) =>
+                  setFormData({ ...formData, imageUrl: e.target.value })
+                }
+                placeholder="https://example.com/image.jpg"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Enter the URL of the category image
+              </p>
+              {formData.imageUrl && (
+                <div className="mt-2">
+                  <img
+                    src={formData.imageUrl}
+                    alt="Preview"
+                    className="w-24 h-24 rounded object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
             </div>
             <DialogFooter>
               <Button

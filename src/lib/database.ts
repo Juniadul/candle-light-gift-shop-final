@@ -422,7 +422,7 @@ export const createComment = async (comment: {
 // Categories API
 export const getCategories = async () => {
   try {
-    const results = await db.select().from(categories).orderBy(categories.display_order);
+    const results = await db.select().from(categories).orderBy(categories.displayOrder);
     return { success: true, data: results };
   } catch (error) {
     console.error('Failed to load categories:', error);
@@ -434,14 +434,16 @@ export const createCategory = async (category: {
   name: string;
   slug: string;
   displayOrder?: number;
+  imageUrl?: string;
 }) => {
   try {
     const timestamp = new Date().toISOString();
     const newCategory = await db.insert(categories).values({
       name: category.name,
       slug: category.slug,
-      display_order: category.displayOrder || 0,
-      created_at: timestamp,
+      displayOrder: category.displayOrder || 0,
+      imageUrl: category.imageUrl || null,
+      createdAt: timestamp,
     }).returning();
     return { success: true, data: newCategory[0] };
   } catch (error) {
@@ -454,12 +456,14 @@ export const updateCategory = async (id: number, category: Partial<{
   name: string;
   slug: string;
   displayOrder: number;
+  imageUrl: string;
 }>) => {
   try {
     const updateData: any = {};
     if (category.name !== undefined) updateData.name = category.name;
     if (category.slug !== undefined) updateData.slug = category.slug;
-    if (category.displayOrder !== undefined) updateData.display_order = category.displayOrder;
+    if (category.displayOrder !== undefined) updateData.displayOrder = category.displayOrder;
+    if (category.imageUrl !== undefined) updateData.imageUrl = category.imageUrl;
 
     const updated = await db.update(categories)
       .set(updateData)

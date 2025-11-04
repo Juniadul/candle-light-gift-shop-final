@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, slug, displayOrder } = body;
+    const { name, slug, displayOrder, imageUrl } = body;
 
     // Validate required fields
     if (!name || name.trim() === '') {
@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         slug: slug.trim(),
         displayOrder: displayOrder ?? 0,
+        imageUrl: imageUrl ? imageUrl.trim() : null,
         createdAt: new Date().toISOString(),
       })
       .returning();
@@ -95,7 +96,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, slug, displayOrder } = body;
+    const { name, slug, displayOrder, imageUrl } = body;
 
     // Check if category exists
     const existingCategory = await db
@@ -132,6 +133,7 @@ export async function PUT(request: NextRequest) {
       name?: string;
       slug?: string;
       displayOrder?: number;
+      imageUrl?: string | null;
     } = {};
 
     if (name !== undefined) {
@@ -156,6 +158,10 @@ export async function PUT(request: NextRequest) {
 
     if (displayOrder !== undefined) {
       updateData.displayOrder = displayOrder;
+    }
+
+    if (imageUrl !== undefined) {
+      updateData.imageUrl = imageUrl ? imageUrl.trim() : null;
     }
 
     // Update category
