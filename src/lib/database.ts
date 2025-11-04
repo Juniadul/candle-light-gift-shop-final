@@ -463,16 +463,20 @@ export const updateCategory = async (id: number, category: Partial<{
     if (category.name !== undefined) updateData.name = category.name;
     if (category.slug !== undefined) updateData.slug = category.slug;
     if (category.displayOrder !== undefined) updateData.displayOrder = category.displayOrder;
-    if (category.imageUrl !== undefined) updateData.imageUrl = category.imageUrl;
+    if (category.imageUrl !== undefined) updateData.imageUrl = category.imageUrl || null;
+
+    console.log('Updating category:', id, 'with data:', updateData);
 
     const updated = await db.update(categories)
       .set(updateData)
       .where(eq(categories.id, id))
       .returning();
+    
+    console.log('Category updated successfully:', updated[0]);
     return { success: true, data: updated[0] };
   } catch (error) {
-    console.error('Failed to update category:', error);
-    return { success: false, error: 'Failed to update category' };
+    console.error('Failed to update category - detailed error:', error);
+    return { success: false, error: `Failed to update category: ${error instanceof Error ? error.message : String(error)}` };
   }
 };
 
