@@ -88,6 +88,7 @@ const AdminCategories = () => {
 
   const handleNameChange = (name: string) => {
     setFormData({
+      ...formData,
       name,
       slug: generateSlug(name),
     });
